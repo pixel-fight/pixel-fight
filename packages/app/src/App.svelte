@@ -4,7 +4,7 @@
 	import Scene from './common/Level1.svelte'
 </script>
 
-<Canvas>
+<Canvas size={{ height: window.innerHeight, width: window.innerWidth }}>
 	<World>
 		<Scene />
 	</World>
