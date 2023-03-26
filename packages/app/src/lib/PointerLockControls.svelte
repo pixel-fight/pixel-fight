@@ -1,80 +1,111 @@
-<script>
-	import { createEventDispatcher, onDestroy } from 'svelte'
-	import { Euler, Camera } from 'three'
-	import { useThrelte, useParent } from '@threlte/core'
+<script lang="ts">
+    import { createEventDispatcher, onDestroy } from "svelte";
+    import { Euler, Camera, Raycaster, Vector3 } from "three";
+    import { useThrelte, useParent } from "@threlte/core";
+    import { blocks, type Block } from "../stores/world";
+    import type { LookingAt } from "../common/local/LocalPlayer.svelte";
 
-	// Set to constrain the pitch of the camera
-	// Range is 0 to Math.PI radians
-	export let minPolarAngle = 0 // radians
-	export let maxPolarAngle = Math.PI // radians
-	export let pointerSpeed = 1.0
+    // Set to constrain the pitch of the camera
+    // Range is 0 to Math.PI radians
+    export let minPolarAngle = 0; // radians
+    export let maxPolarAngle = Math.PI; // radians
+    export let pointerSpeed = 1.0;
 
-	let isLocked = false
+    export let lookingAt: LookingAt = undefined;
 
-	const { renderer, invalidate } = useThrelte()
-	const domElement = renderer.domElement
-	const camera = useParent()
-	const dispatch = createEventDispatcher()
+    const raycaster = new Raycaster();
+    const pointer = new Vector3();
 
-	const _euler = new Euler(0, 0, 0, 'YXZ')
-	const _PI_2 = Math.PI / 2
+    let isLocked = false;
 
-	if (!renderer) {
-		throw new Error('Threlte Context missing: Is <PointerLockControls> a child of <Canvas>?')
-	}
-	if (!($camera instanceof Camera)) {
-		throw new Error('Parent missing: <PointerLockControls> need to be a child of a <Camera>')
-	}
+    const { renderer, invalidate, scene } = useThrelte();
+    const domElement = renderer.domElement;
+    const camera = useParent();
+    const dispatch = createEventDispatcher();
 
-	const onChange = () => {
-		invalidate('PointerLockControls: change event')
-		dispatch('change')
-	}
+    const _euler = new Euler(0, 0, 0, "YXZ");
+    const _PI_2 = Math.PI / 2;
 
-	export const lock = () => domElement.requestPointerLock()
-	export const unlock = () => document.exitPointerLock()
+    if (!renderer) {
+        throw new Error("Threlte Context missing: Is <PointerLockControls> a child of <Canvas>?");
+    }
+    if (!($camera instanceof Camera)) {
+        throw new Error("Parent missing: <PointerLockControls> need to be a child of a <Camera>");
+    }
 
-	domElement.addEventListener('mousemove', onMouseMove)
-	domElement.ownerDocument.addEventListener('pointerlockchange', onPointerlockChange)
-	domElement.ownerDocument.addEventListener('pointerlockerror', onPointerlockError)
+    const onChange = () => {
+        invalidate("PointerLockControls: change event");
+        dispatch("change");
+    };
 
-	onDestroy(() => {
-		domElement.removeEventListener('mousemove', onMouseMove)
-		domElement.ownerDocument.removeEventListener('pointerlockchange', onPointerlockChange)
-		domElement.ownerDocument.removeEventListener('pointerlockerror', onPointerlockError)
-	})
+    export const lock = () => domElement.requestPointerLock();
+    export const unlock = () => document.exitPointerLock();
 
-	/**
-	 * @param {MouseEvent} event
-	 */
-	function onMouseMove(event) {
-		if (!isLocked) return
+    domElement.addEventListener("mousemove", onMouseMove);
+    domElement.ownerDocument.addEventListener("pointerlockchange", onPointerlockChange);
+    domElement.ownerDocument.addEventListener("pointerlockerror", onPointerlockError);
 
-		const { movementX, movementY } = event
+    onDestroy(() => {
+        domElement.removeEventListener("mousemove", onMouseMove);
+        domElement.ownerDocument.removeEventListener("pointerlockchange", onPointerlockChange);
+        domElement.ownerDocument.removeEventListener("pointerlockerror", onPointerlockError);
+    });
 
-		_euler.setFromQuaternion($camera.quaternion)
+    /**
+     * @param {MouseEvent} event
+     */
+    function onMouseMove(event) {
+        if (!isLocked) return;
 
-		_euler.y -= movementX * 0.002 * pointerSpeed
-		_euler.x -= movementY * 0.002 * pointerSpeed
+        const { movementX, movementY } = event;
 
-		_euler.x = Math.max(_PI_2 - maxPolarAngle, Math.min(_PI_2 - minPolarAngle, _euler.x))
+        _euler.setFromQuaternion($camera.quaternion);
 
-		$camera.quaternion.setFromEuler(_euler)
+        _euler.y -= movementX * 0.002 * pointerSpeed;
+        _euler.x -= movementY * 0.002 * pointerSpeed;
 
-		onChange()
-	}
+        _euler.x = Math.max(_PI_2 - maxPolarAngle, Math.min(_PI_2 - minPolarAngle, _euler.x));
 
-	function onPointerlockChange() {
-		if (document.pointerLockElement === domElement) {
-			dispatch('lock')
-			isLocked = true
-		} else {
-			dispatch('unlock')
-			isLocked = false
-		}
-	}
+        $camera.quaternion.setFromEuler(_euler);
 
-	function onPointerlockError() {
-		console.error('PointerLockControls: Unable to use Pointer Lock API')
-	}
+        const x = window.innerWidth / 2;
+        const y = window.innerHeight / 2;
+
+        pointer.x = (x / window.innerWidth) * 2 - 1;
+        pointer.y = -(y / window.innerHeight) * 2 + 1;
+        pointer.z = 0.5;
+
+        raycaster.setFromCamera(pointer, $camera as Camera);
+        const intersects = raycaster.intersectObjects(scene.children);
+
+        const intersect = intersects[0];
+
+        // If currently looking at a block in the world, store it
+        if (intersect?.object.userData.blockId !== undefined) {
+            lookingAt = {
+                blockId: intersect.object.userData.blockId,
+                distance: intersect.distance
+            };
+        } else {
+            lookingAt = undefined;
+        }
+
+        console.log(lookingAt, intersect);
+
+        onChange();
+    }
+
+    function onPointerlockChange() {
+        if (document.pointerLockElement === domElement) {
+            dispatch("lock");
+            isLocked = true;
+        } else {
+            dispatch("unlock");
+            isLocked = false;
+        }
+    }
+
+    function onPointerlockError() {
+        console.error("PointerLockControls: Unable to use Pointer Lock API");
+    }
 </script>
