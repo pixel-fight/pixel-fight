@@ -2,7 +2,6 @@
     import { createEventDispatcher, onDestroy } from "svelte";
     import { Euler, Camera, Raycaster, Vector3, Mesh } from "three";
     import { useThrelte, useParent } from "@threlte/core";
-    import { blocks, type Block } from "../stores/world";
     import type { LookingAt } from "../common/local/LocalPlayer.svelte";
 
     // Set to constrain the pitch of the camera

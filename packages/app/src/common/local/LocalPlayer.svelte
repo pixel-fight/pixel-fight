@@ -12,7 +12,7 @@
     import { createEventDispatcher, onDestroy } from "svelte";
     import PointerLockControls from "../../lib/PointerLockControls.svelte";
     import { blocks, type Block } from "../../stores/world";
-    import { points, weapon } from "../../stores/player";
+    import { isFiring, points, timeSinceLastFire, weapon } from "../../stores/player";
     import { fireWeapon } from "../../lib/weapons";
 
     export let position = undefined;
@@ -113,13 +113,33 @@
         }
     }
 
-    function onClick(e: MouseEvent) {
+    function onMouseDown(e: MouseEvent) {
         if (!lookingAt) return;
-        fireWeapon({ blockId: lookingAt.blockId, weapon });
+        isFiring.set(true);
+        fireWeapon({ blockId: lookingAt.blockId, weapon: $weapon });
     }
+
+    function onMouseUp() {
+        timeSinceLastFire.set(0);
+        isFiring.set(false);
+    }
+
+    useFrame((ctx, delta) => {
+        timeSinceLastFire.update(v => v + delta);
+
+        // If is currently firing a full auto weapon, shoot the weapon every interval of fire rate
+        if (lookingAt && $isFiring && $weapon.fullAuto && $timeSinceLastFire >= $weapon.fireRate) {
+            fireWeapon({ blockId: lookingAt.blockId, weapon: $weapon });
+        }
+    });
 </script>
 
-<svelte:window on:keydown|preventDefault={onKeyDown} on:keyup={onKeyUp} on:click={onClick} />
+<svelte:window
+    on:keydown|preventDefault={onKeyDown}
+    on:keyup={onKeyUp}
+    on:mousedown={onMouseDown}
+    on:mouseup={onMouseUp}
+/>
 
 <PerspectiveCamera bind:camera={cam} bind:position fov={90}>
     <PointerLockControls bind:lock bind:lookingAt />
