@@ -1,8 +1,8 @@
-import type {  Vector3Tuple } from "three"
+import type { Vector3Tuple } from 'three';
 
 export class CulledMesher {
 	constructor() {}
-	mesh(volume: number[], dims: Vector3Tuple) {
+	mesh(volume: Int32Array, dims: Vector3Tuple) {
 		//Precalculate direction vectors for convenience
 		var dir = new Array(3);
 		for (var i = 0; i < 3; ++i) {

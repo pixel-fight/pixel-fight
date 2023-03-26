@@ -18,7 +18,8 @@
 
 		<!-- Cube -->
 		<T.Group scale={$scale}>
-			<T.Mesh position.y={0.5} castShadow let:ref>
+			<!--  -->
+			<T.Mesh castShadow let:ref {...{ "position.y": 0.5 }}>
 				<!-- Add interaction -->
 				<InteractiveObject
 					object={ref}
@@ -33,8 +34,8 @@
 		</T.Group>
 
 		<!-- Floor -->
-		<T.Mesh receiveShadow rotation.x={degToRad(-90)}>
-			<T.CircleGeometry args={[3, 72]} />
+		<T.Mesh receiveShadow  {...{ "rotation.x": degToRad(-90) }}>
+			<T.CircleGeometry args={[3, 72]}  />
 			<T.MeshStandardMaterial color="white" />
 		</T.Mesh>
 	</Canvas>
