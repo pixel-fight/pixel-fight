@@ -9,30 +9,32 @@
     import { blocks } from "../stores/world";
 </script>
 
-<DirectionalLight shadow position={{ y: 20, x: 8, z: -3 }} />
+<DirectionalLight shadow position={{ y: 3, x: 8, z: -3 }} />
 <AmbientLight intensity={1} />
 
 <CollisionGroups groups={[0]}>
-    <LocalPlayer position={{ x: 0, y: 3, z: 0 }} />
+    <LocalPlayer position={{ x: 0, y: 30, z: 0 }} />
 
     <!-- WALLS -->
     <AutoColliders shape={"cuboid"}>
-        {#each Object.entries($blocks) as [blockId, block] (blockId)}
-            {#if get(block).visible}
-                <Mesh
-                    receiveShadow
-                    castShadow
-                    position={get(block).position}
-                    geometry={new BoxGeometry(
-                        get(block).geometry.width,
-                        get(block).geometry.height,
-                        get(block).geometry.depth
-                    )}
-                    material={new MeshStandardMaterial(get(block).material)}
-                    interactive
-                    userData={{ blockId }}
-                />
-            {/if}
+        {#each Object.entries($blocks) as [blockId, block]}
+            <Mesh
+                receiveShadow
+                castShadow
+                position={block.position}
+                geometry={new BoxGeometry(
+                    block.geometry.width,
+                    block.geometry.height,
+                    block.geometry.depth
+                )}
+                material={new MeshStandardMaterial({
+                    color: block.material.color,
+                    opacity: block.health / 100,
+                    transparent: true
+                })}
+                interactive
+                userData={{ blockId }}
+            />
         {/each}
     </AutoColliders>
 </CollisionGroups>

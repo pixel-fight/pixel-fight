@@ -84,8 +84,7 @@
         if (intersect?.object.userData.blockId !== undefined) {
             lookingAt = {
                 blockId: intersect.object.userData.blockId,
-                distance: intersect.distance,
-                mesh: intersect.object as Mesh
+                distance: intersect.distance
             };
         } else {
             lookingAt = undefined;

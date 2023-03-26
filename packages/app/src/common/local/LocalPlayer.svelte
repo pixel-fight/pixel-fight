@@ -2,18 +2,18 @@
     export type LookingAt = {
         blockId: string;
         distance: number;
-        mesh: Mesh;
     };
 </script>
 
 <script lang="ts">
-    import { Mesh, Vector3 } from "three";
+    import { Vector3 } from "three";
     import { useFrame, useThrelte, PerspectiveCamera } from "@threlte/core";
     import { RigidBody, CollisionGroups, Collider } from "@threlte/rapier";
     import { createEventDispatcher, onDestroy } from "svelte";
     import PointerLockControls from "../../lib/PointerLockControls.svelte";
     import { blocks, type Block } from "../../stores/world";
-    import { get } from "svelte/store";
+    import { points, weapon } from "../../stores/player";
+    import { fireWeapon } from "../../lib/weapons";
 
     export let position = undefined;
     export let playerCollisionGroups = [0];
@@ -115,13 +115,7 @@
 
     function onClick(e: MouseEvent) {
         if (!lookingAt) return;
-        console.log(lookingAt.mesh);
-        return;
-        $blocks[lookingAt.blockId].update(v => ({
-            ...v,
-            visible: false
-        }));
-        console.log(get($blocks[lookingAt.blockId]));
+        fireWeapon({ blockId: lookingAt.blockId, weapon });
     }
 </script>
 
