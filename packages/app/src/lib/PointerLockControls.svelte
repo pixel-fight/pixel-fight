@@ -1,6 +1,6 @@
 <script lang="ts">
     import { createEventDispatcher, onDestroy } from "svelte";
-    import { Euler, Camera, Raycaster, Vector3 } from "three";
+    import { Euler, Camera, Raycaster, Vector3, Mesh } from "three";
     import { useThrelte, useParent } from "@threlte/core";
     import { blocks, type Block } from "../stores/world";
     import type { LookingAt } from "../common/local/LocalPlayer.svelte";
@@ -84,13 +84,12 @@
         if (intersect?.object.userData.blockId !== undefined) {
             lookingAt = {
                 blockId: intersect.object.userData.blockId,
-                distance: intersect.distance
+                distance: intersect.distance,
+                mesh: intersect.object as Mesh
             };
         } else {
             lookingAt = undefined;
         }
-
-        console.log(lookingAt, intersect);
 
         onChange();
     }
