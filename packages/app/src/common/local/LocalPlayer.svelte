@@ -13,8 +13,8 @@
     import PointerLockControls from "../../lib/PointerLockControls.svelte";
     import { blocks, type Block } from "../../stores/world";
     import { isFiring, points, timeSinceLastFire, weapon } from "../../stores/player";
-    import { fireWeapon } from "../../lib/weapons";
-
+    import { attemptToFireWeapon, weapons } from "../../lib/weapons";
+    import Raycast from "../../lib/Raycast.svelte";
     export let position = undefined;
     export let playerCollisionGroups = [0];
     export let groundCollisionGroups = [15];
@@ -84,6 +84,12 @@
             case "d":
                 right = 1;
                 break;
+            case "q":
+                weapon.set(weapons.Pistol);
+                break;
+            case "e":
+                weapon.set(weapons.Pickaxe);
+                break;
             case " ":
                 if (!rigidBody || !grounded) break;
                 rigidBody.applyImpulse({ x: 0, y: jumpStrength, z: 0 }, true);
@@ -114,9 +120,8 @@
     }
 
     function onMouseDown(e: MouseEvent) {
-        if (!lookingAt) return;
         isFiring.set(true);
-        fireWeapon({ blockId: lookingAt.blockId, weapon: $weapon });
+        attemptToFireWeapon({ lookingAt, weapon: $weapon });
     }
 
     function onMouseUp() {
@@ -128,8 +133,8 @@
         timeSinceLastFire.update(v => v + delta);
 
         // If is currently firing a full auto weapon, shoot the weapon every interval of fire rate
-        if (lookingAt && $isFiring && $weapon.fullAuto && $timeSinceLastFire >= $weapon.fireRate) {
-            fireWeapon({ blockId: lookingAt.blockId, weapon: $weapon });
+        if ($isFiring && $weapon.fullAuto && $timeSinceLastFire >= $weapon.fireRate) {
+            attemptToFireWeapon({ lookingAt, weapon: $weapon });
         }
     });
 </script>
@@ -142,7 +147,8 @@
 />
 
 <PerspectiveCamera bind:camera={cam} bind:position fov={90}>
-    <PointerLockControls bind:lock bind:lookingAt />
+    <PointerLockControls bind:lock />
+    <Raycast bind:lookingAt />
 </PerspectiveCamera>
 
 <RigidBody bind:rigidBody {position} enabledRotations={[false, false, false]}>

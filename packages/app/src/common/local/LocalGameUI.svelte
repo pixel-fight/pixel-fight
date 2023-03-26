@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { points } from "../../stores/player";
+    import { points, weapon } from "../../stores/player";
 </script>
 
 <div class="ui-wrapper">
@@ -9,7 +9,10 @@
         <!-- Top right -->
 
         <!-- Bottom left -->
-        <div class="bl">Points: {$points}</div>
+        <div class="bl">
+            Points: {$points} <br />
+            Equipped: {$weapon.name}
+        </div>
 
         <!-- Bottom right -->
 

@@ -1,6 +1,6 @@
 <script lang="ts">
     import { createEventDispatcher, onDestroy } from "svelte";
-    import { Euler, Camera, Raycaster, Vector3, Mesh } from "three";
+    import { Euler, Camera } from "three";
     import { useThrelte, useParent } from "@threlte/core";
     import type { LookingAt } from "../common/local/LocalPlayer.svelte";
 
@@ -11,9 +11,6 @@
     export let pointerSpeed = 1.0;
 
     export let lookingAt: LookingAt = undefined;
-
-    const raycaster = new Raycaster();
-    const pointer = new Vector3();
 
     let isLocked = false;
 
@@ -66,28 +63,6 @@
         _euler.x = Math.max(_PI_2 - maxPolarAngle, Math.min(_PI_2 - minPolarAngle, _euler.x));
 
         $camera.quaternion.setFromEuler(_euler);
-
-        const x = window.innerWidth / 2;
-        const y = window.innerHeight / 2;
-
-        pointer.x = (x / window.innerWidth) * 2 - 1;
-        pointer.y = -(y / window.innerHeight) * 2 + 1;
-        pointer.z = 0.5;
-
-        raycaster.setFromCamera(pointer, $camera as Camera);
-        const intersects = raycaster.intersectObjects(scene.children);
-
-        const intersect = intersects[0];
-
-        // If currently looking at a block in the world, store it
-        if (intersect?.object.userData.blockId !== undefined) {
-            lookingAt = {
-                blockId: intersect.object.userData.blockId,
-                distance: intersect.distance
-            };
-        } else {
-            lookingAt = undefined;
-        }
 
         onChange();
     }
