@@ -1,7 +1,5 @@
 import { NearestFilter, ShaderMaterial, Texture, type Material, type IUniform } from 'three';
 
-// const createAtlas = window.atlaspack
-
 /*
 
 * get what I have working w/o the atlas function
@@ -29,6 +27,10 @@ type Uniforms = {
 	texturesEnabled: IUniform<Boolean>;
 };
 
+export interface TextureInfo {
+	src: string;
+}
+
 export class TextureManager {
 	canvas: HTMLCanvasElement;
 	aoEnabled: boolean;
@@ -38,21 +40,16 @@ export class TextureManager {
 	tiles: PackedImage[];
 	animated: Record<string, unknown>;
 	material: Material;
-	names: string[]
 
-	constructor(opts: { names: string[], canvas: HTMLCanvasElement, aoEnabled?: boolean }) {
+	constructor(opts: { canvas: HTMLCanvasElement, aoEnabled?: boolean }) {
 		this.canvas = opts.canvas
 		this.canvas.setAttribute('id', 'texture');
-		// document.getElementsByTagName('body')[0].appendChild(this.canvas)
-		this.aoEnabled = opts.aoEnabled || false;
+		this.aoEnabled = opts.aoEnabled ?? false;
 		this.canvas.width = 128;
 		this.canvas.height = 128;
 		this.canvas.style.width = '512px';
 		this.canvas.style.height = '512px';
 		this.tiles = [];
-		this.names = []
-		// this.atlas = createAtlas(this.canvas);
-		// this.atlas.tilepad = true // this will cost 8x texture memory.
 		this.animated = {};
 		const ctx = this.canvas.getContext('2d')!;
 
@@ -179,8 +176,7 @@ export class TextureManager {
 				[x, y2]
 			];
 		}
-		// console.log(x)
-		// console.log("looking up type number",typeNum,info)
+
 		const x = info.x / 128;
 		const y = info.y / 128;
 		const x2 = (info.x + info.w) / 128;
@@ -191,34 +187,16 @@ export class TextureManager {
 			[x2, y2],
 			[x, y2]
 		];
-		/*
-        return [
-            [info.x/128,info.y/128],
-            [info.x/128,(info.y+info.h)/128],
-            [(info.x+info.w)/128,(info.y)/128],
-            [(info.x+info.w)/128,(info.y+info.h)/128],
-        ]
-         */
-		// const uvs = this.atlas.uv()[this.names[typeNum-1]]
-		// if(!uvs) return [[0,0],[0,1],[1,1],[1,0]]
-		// return [[0.0,0],[0.0,1],[0,1],[1,0]]
-		// return uvs
 	}
 
-	lookupInfoForBlockType(typeNum: number) {
+	lookupInfoForBlockType(_: number) {
 		return {
 			animated: false
 		};
 	}
 
-	getBlockTypeForName(name: string) {
-		return this.names.findIndex((n) => n === name) + 1;
-	}
-
 	async loadTextures(
-		infos: {
-			src: string;
-		}[]
+		infos: TextureInfo[]
 	) {
 		const proms = infos.map((info, index) => {
 			console.log('loading', info.src);
@@ -242,10 +220,3 @@ export class TextureManager {
 		});
 	}
 }
-
-/*
-	// unused?
-	function ext(name) {
-		return String(name).indexOf('.') !== -1 ? name : name + '.png';
-	}
-*/

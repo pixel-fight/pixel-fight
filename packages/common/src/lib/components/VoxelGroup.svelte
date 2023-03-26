@@ -14,9 +14,9 @@
 	}).join('')
 </script>
 
-<T.Group scale={1}>
-	{#each data.XYZI as {x, y, z, c}}
-		{@const color = data.RGBA[c]}
-		<Voxel position={{ x, y, z }} color={rgbToHex(color.r, color.g, color.b)} />
+<Chunker position={{ x: 0, y: 0, z: 0 }} world={(i,j,k) => 1}>
+	
+	{#each [1,2,3] as z}
+		<Voxel position={{ x: 0, y: 0, z}} value={1} />
 	{/each}
-</T.Group>
+</Chunker>

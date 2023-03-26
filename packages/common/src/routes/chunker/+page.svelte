@@ -18,7 +18,32 @@
 <T.DirectionalLight position={[-3, 10, -10]} intensity={0.2} />
 <T.AmbientLight intensity={0.2} />
 
-<Chunker world={(i,j,k) => {
+<Chunker textures={[
+	{
+		src: '/textures/kenneynl/tiles/grass_top.png'
+	},
+	{
+		src: '/textures/kenneynl/tiles/dirt.png'
+	},
+	{
+		src: '/textures/kenneynl/tiles/lava.png',
+	},
+	{
+		src: '/textures/kenneynl/tiles/stone.png',
+	},
+	{
+		src: '/textures/kenneynl/tiles/sand.png',
+	},
+	{
+		src: '/textures/tnt.png',
+	},
+	{
+		src: '/textures/heart.png',
+	},
+	{
+		src: '/textures/tnt.png',
+	},
+]} world={(i,j,k) => {
 	return map.has([i,j,k].join("|")) 
 		? 1
 		: 0

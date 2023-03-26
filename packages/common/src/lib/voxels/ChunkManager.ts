@@ -71,6 +71,16 @@ const SCALE = new Vector3(1.0, 1.0, 1.0);
 
 export type VoxelChunkGenerator = (low: number[], high: number[], ps: Vector3) => ChunkData;
 
+export interface ChunkManagerOptions {
+	container: Object3D;
+	chunkDistance: number;
+	chunkSize: number;
+	blockSize: number;
+	mesher: CulledMesher;
+	textureManager: TextureManager;
+	generateVoxelChunk: VoxelChunkGenerator;
+}
+
 export class ChunkManager {
 	container: Object3D;
 	listeners: Record<string, ChunkEventHandler[]>;
@@ -84,15 +94,7 @@ export class ChunkManager {
 	chunkBits: number;
 	CHUNK_CACHE: Record<string, ChunkData>;
 
-	constructor(opts: {
-		container: Object3D;
-		chunkDistance: number;
-		chunkSize: number;
-		blockSize: number;
-		mesher: CulledMesher;
-		textureManager: TextureManager;
-		generateVoxelChunk: VoxelChunkGenerator;
-	}) {
+	constructor(opts: ChunkManagerOptions) {
 		this.listeners = {};
 		this.container = opts.container;
 		this.distance = opts.chunkDistance || 2;

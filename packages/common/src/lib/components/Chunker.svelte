@@ -1,108 +1,96 @@
+<script lang="ts" context="module">
+	import { type InjectionKey, getContext, setContext } from "optional-default-site-kit"
+	import { ChunkManager } from "$lib/voxels"
+
+	interface ChunkerContext {
+		chunkManager: ChunkManager
+		createBlock(pos: Vector3, value: number): void
+		removeBlock(pos: Vector3): void
+		setBlock(pos: Vector3, value: number): void
+	}
+
+	export const chunkerContextKey: InjectionKey<ChunkerContext> = "chunker"
+	
+	export function useChunker() {
+		const context = getContext(chunkerContextKey)
+
+		if (!context) throw new Error("Invalid Chunker context")
+
+		return context
+	}
+</script>
+
 <script lang="ts">
 	import { onMount } from "svelte"
 	import { Group, Vector3 } from "three"
-	import { ChunkManager, TextureManager, CulledMesher, generateChunkInfoFromFunction } from "$lib/voxels"
+	import { TextureManager, CulledMesher, generateChunkInfoFromFunction } from "$lib"
 	import { useThrelte } from "@threlte/core"
+	import type { TextureInfo } from "$lib"
 	
 	const ctx = useThrelte()
 
-	let canvas: HTMLCanvasElement
-	export let chunkManager: ChunkManager | undefined = undefined
 	export let world: (i: number, j: number, k: number) => number
+	export let textures: TextureInfo[]
 
-	// function to generate a flat world
-	const flat = (i: number, j: number, k: number) => {
-		//an gap in the floor made of air
-		// if(j <1 && k < -5 && k > -10 ) return 0
-		//the floor is brick, from depth 0 to -10
-		if(j < 1 && j > -10) return 1
-	
-		//move back 10
-		k+=20
-		// a dome
-		if((i*i + j*j + k*k) < 80) {
-			return 2
-		}
-		//nothing else in the world
-		return 0
-	}
-
-	onMount(() => {
-		chunkManager = new ChunkManager({
-			chunkDistance:1,
-			blockSize:1,
-			mesher: new CulledMesher(),
-			chunkSize: 128,
-			generateVoxelChunk: (low, high) => generateChunkInfoFromFunction(low, high, world ?? flat),
-			container: new Group(),
-			textureManager: new TextureManager({
-				aoEnabled: true,
-				canvas,
-				names: [
-					"red",
-					"blue",
-					"green"
-				]
-			}),
-		});
-		chunkManager.textureManager.loadTextures([
-			{
-				src: '/textures/kenneynl/tiles/grass_top.png'
-			},
-			{
-				src: '/textures/kenneynl/tiles/dirt.png'
-			},
-			{
-				src: '/textures/kenneynl/tiles/lava.png',
-			},
-			{
-				src: '/textures/kenneynl/tiles/stone.png',
-			},
-			{
-				src: '/textures/kenneynl/tiles/sand.png',
-			},
-			{
-				src: '/textures/tnt.png',
-			},
-			{
-				src: '/textures/heart.png',
-			},
-			{
-				src: '/textures/tnt.png',
-			},
-		]).then(() =>{
-			chunkManager!.rebuildAllMeshes()
-			chunkManager!.requestMissingChunks(new Vector3(0,0,0))
-			ctx.scene.add(chunkManager!.container)
-			console.log("added")
-		})
-
-		
-		return () => {
-			ctx.scene.remove(chunkManager!.container)
-		}
-	})
-
-	function createBlock(pos: Vector3, name: string) {
-		const type = chunkManager!.textureManager.getBlockTypeForName(name)
-		setBlock(pos, type)
-	}
-
-	function removeBlock(pos: Vector3) {
-		pos.floor()
-		setBlock(pos, 0)
-	}
+	let canvas: HTMLCanvasElement
+	let chunkManager: ChunkManager
 
 	function setBlock(pos: Vector3, value: number) {
 		pos.floor()
 		chunkManager!.setVoxelAtCoordinates(pos, value)
 	}
+	
+	const context: ChunkerContext = {
+		get chunkManager() {
+			return chunkManager!
+		},
+		setBlock,
+		createBlock(pos, value) {
+			setBlock(pos, value)
+		},
+		removeBlock(pos) {
+			setBlock(pos, 0)
+		},
+	}
+	
+	let loaded = false
+	
+	setContext(chunkerContextKey, context)
+
+	onMount(() => {
+		chunkManager = new ChunkManager({
+			chunkDistance: 1,
+			blockSize: 1,
+			mesher: new CulledMesher(),
+			chunkSize: 128,
+			generateVoxelChunk: (low, high) => generateChunkInfoFromFunction(low, high, world),
+			container: new Group(),
+			textureManager: new TextureManager({
+				aoEnabled: true,
+				canvas,
+			}),
+		});
+
+		chunkManager.textureManager.loadTextures(textures).then(() =>{
+			chunkManager!.rebuildAllMeshes()
+			chunkManager!.requestMissingChunks(new Vector3(0,0,0))
+			ctx.scene.add(chunkManager!.container)
+			console.log("Chunker.added")
+			loaded = true
+		})
+
+		return () => ctx.scene.remove(chunkManager!.container)
+	})
 </script>
 
 <canvas bind:this={canvas} />
 
+{#if loaded}
+	<slot />
+{/if}
+
 <style>
 	canvas {
-		/* display: none; */
+		display: none;
 	}
 </style>

@@ -60,7 +60,9 @@ importers:
       '@types/lodash-es': ^4.17.7
       '@types/ndarray': ^1.0.11
       '@types/three': ^0.149.0
+      lodash: ^4.17.21
       lodash-es: ^4.17.21
+      optional-default-site-kit: ^0.4.0
       parse-magica-voxel: ^2.1.2
       prettier: ^2.8.0
       prettier-plugin-svelte: ^2.10.0
@@ -88,7 +90,9 @@ importers:
       '@types/lodash-es': 4.17.7
       '@types/ndarray': 1.0.11
       '@types/three': 0.149.0
+      lodash: 4.17.21
       lodash-es: 4.17.21
+      optional-default-site-kit: 0.4.0
       parse-magica-voxel: 2.1.2
       prettier: 2.8.7
       prettier-plugin-svelte: 2.10.0_5ir2xprf4ygk6mygilwnltaw3a
@@ -1010,6 +1014,10 @@ packages:
     resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
     dev: true
 
+  /lodash/4.17.21:
+    resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
+    dev: true
+
   /loupe/2.3.6:
     resolution: {integrity: sha512-RaPMZKiMy8/JruncMU5Bt6na1eftNoo++R4Y+N2FrxkDVTrGvcyzFTsaGif4QTeKESheMGegbhw6iUAq+5A8zA==}
     dependencies:
@@ -1187,6 +1195,10 @@ packages:
     resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
     dependencies:
       wrappy: 1.0.2
+    dev: true
+
+  /optional-default-site-kit/0.4.0:
+    resolution: {integrity: sha512-a3Q8BoVkxXgvmbSRl8Nj+F0Zb0yjg3deCpuxIeDBr3tCJKIpFOLHZgNaBFGm97khZPJtPANbv9M2ypatBWG35A==}
     dev: true
 
   /parent-module/1.0.1:
