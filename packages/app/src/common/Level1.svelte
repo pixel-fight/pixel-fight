@@ -29,7 +29,7 @@
                 )}
                 material={new MeshStandardMaterial({
                     color: block.material.color,
-                    opacity: block.health / 100,
+                    opacity: block.health / 5,
                     transparent: true
                 })}
                 interactive

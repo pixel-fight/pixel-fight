@@ -34,7 +34,7 @@ const b: { [key: string]: Block } = {};
 for (let x = -8; x <= 8; x++) {
     for (let z = -8; z <= 8; z++) {
         b[makeid(16)] = {
-            health: 100,
+            health: 5,
             position: {
                 x,
                 y: 0,

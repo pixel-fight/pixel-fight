@@ -14,7 +14,7 @@ export type Weapon = {
 export const weapons: { [key: string]: Weapon } = {
     Pickaxe: {
         name: "Pickaxe",
-        damage: 20,
+        damage: 1,
         cost: 0,
         reward: 1,
         fireRate: 0.05,
@@ -22,7 +22,7 @@ export const weapons: { [key: string]: Weapon } = {
     },
     Pistol: {
         name: "Pistol",
-        damage: 35,
+        damage: 5,
         cost: 1,
         reward: 0,
         fireRate: 0.5,
