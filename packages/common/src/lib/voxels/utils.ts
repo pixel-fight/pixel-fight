@@ -1,12 +1,25 @@
-// import { Quaternion, Ray, Vector2, Vector3,} from "three"
-// import { traceRay } from './raycast.js'
 import type { ChunkData } from './ChunkManager';
 import type { Vector3Tuple } from 'three';
 
-export function toHexColor(num: number) {
+export function rgbToHex(num: number) {
 	let str = num.toString(16);
 	while (str.length < 6) str = '0' + str;
 	return '#' + str;
+}
+
+export function hexToRgb(hex: string) {
+  // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+  var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+  hex = hex.replace(shorthandRegex, function(_, r, g, b) {
+    return r + r + g + g + b + b;
+  });
+
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : null;
 }
 
 export function generateChunkInfoFromFunction(
@@ -36,10 +49,6 @@ export const toRad = (deg: number) => (Math.PI / 180) * deg;
 
 export const EPSILON = 1e-8;
 
-/*
-    export const $ = (sel) => document.querySelector(sel)
-*/
-
 export const DIRS = {
 	NONE: 'NONE',
 	UP: 'UP',
@@ -47,9 +56,9 @@ export const DIRS = {
 	LEFT: 'LEFT',
 	RIGHT: 'RIGHT'
 };
-/*
-    export const on = (elem, type, cb) => elem.addEventListener(type,cb)
-*/
+
+export const rand = (min: number, max: number) => Math.random() * (max - min) + min;
+
 
 /*
     export function traceRayAtScreenCoords(app, pt, distance) {
@@ -81,5 +90,3 @@ export const DIRS = {
         }
     }
 */
-
-export const rand = (min: number, max: number) => Math.random() * (max - min) + min;
