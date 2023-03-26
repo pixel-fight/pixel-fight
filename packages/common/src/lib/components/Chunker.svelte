@@ -9,7 +9,7 @@
 	let canvas: HTMLCanvasElement
 	export let chunkManager: ChunkManager | undefined = undefined
 	export let world: (i: number, j: number, k: number) => number
-	
+
 	// function to generate a flat world
 	const flat = (i: number, j: number, k: number) => {
 		//an gap in the floor made of air
@@ -27,18 +27,13 @@
 		return 0
 	}
 
-	
-	
 	onMount(() => {
-		
 		chunkManager = new ChunkManager({
 			chunkDistance:1,
 			blockSize:1,
 			mesher: new CulledMesher(),
-			chunkSize: 256,
-			generateVoxelChunk: (low, high) => {
-				return generateChunkInfoFromFunction(low, high, world ?? flat)
-			},
+			chunkSize: 128,
+			generateVoxelChunk: (low, high) => generateChunkInfoFromFunction(low, high, world ?? flat),
 			container: new Group(),
 			textureManager: new TextureManager({
 				aoEnabled: true,
@@ -50,9 +45,6 @@
 				]
 			}),
 		});
-		
-		
-		
 		chunkManager.textureManager.loadTextures([
 			{
 				src: '/textures/kenneynl/tiles/grass_top.png'
@@ -111,6 +103,6 @@
 
 <style>
 	canvas {
-		display: none;
+		/* display: none; */
 	}
 </style>

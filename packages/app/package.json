@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@dimforge/rapier3d-compat": "^0.11.2",
+    "@pixel-fight/common": "workspace:^0.0.1",
     "@sveltejs/vite-plugin-svelte": "^2.0.3",
     "@theatre/core": "^0.6.0",
     "@theatre/studio": "^0.6.0",
