@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { Chunker, Voxel } from "$lib"
-	import { T, OrbitControls } from "@threlte/core"
+	import { T, OrbitControls, Group } from "@threlte/core"
+	import type { Group as ThreeGroup } from "three"
+	
+	let group: ThreeGroup
 	
 	// function to generate a flat world
 	const flatland = (i: number, j: number, k: number) => {
@@ -28,8 +31,38 @@
 <T.DirectionalLight position={[-3, 10, -10]} intensity={0.2} />
 <T.AmbientLight intensity={0.2} />
 
-<Chunker world={flatland}>
-	{#each [...Array(5).keys()].map(_ => Math.floor(Math.random() * 6)) as value, index}
-		<Voxel position={{ x: 0, y: index, z: 0 }} {value} />
-	{/each}
-</Chunker>
+<Group bind:group />
+	
+{#if group}
+	<Chunker container={group} world={flatland} textures={[
+			{
+				src: '/textures/kenneynl/tiles/grass_top.png'
+			},
+			{
+				src: '/textures/kenneynl/tiles/dirt.png'
+			},
+			{
+				src: '/textures/kenneynl/tiles/lava.png',
+			},
+			{
+				src: '/textures/kenneynl/tiles/stone.png',
+			},
+			{
+				src: '/textures/kenneynl/tiles/sand.png',
+			},
+			{
+				src: '/textures/tnt.png',
+			},
+			{
+				src: '/textures/heart.png',
+			},
+			{
+				src: '/textures/tnt.png',
+			},
+		]}>
+		{#each [...Array(5).keys()].map(_ => Math.floor(Math.random() * 6)) as value, index}
+			<Voxel position={{ x: 0, y: index, z: 0 }} {value} />
+		{/each}
+	</Chunker>
+{/if}
+

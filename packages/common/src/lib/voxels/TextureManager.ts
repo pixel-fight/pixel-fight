@@ -198,25 +198,30 @@ export class TextureManager {
 	async loadTextures(
 		infos: TextureInfo[]
 	) {
-		const proms = infos.map((info, index) => {
-			console.log('loading', info.src);
-			return new Promise<PackedImage>((res, rej) => {
+		const packedImages: PackedImage[] = []
+
+		for (const [index, { src }] of infos.entries()) {
+			console.log('loading', src);
+
+			const packedImage = await new Promise<PackedImage>((res, rej) => {
 				const img = new Image();
-				img.id = info.src;
-				img.src = info.src;
+				img.setAttribute("crossorigin", "anonymous")
+				img.id = src;
+				img.src = src;
 				img.onload = () => {
 					res(this.packImage(img, index));
+					console.log('loaded', src);
 				};
 				img.onerror = (e) => {
-					console.error(`Couldn't load texture from url ${info.src}`);
+					console.error(`Couldn't load texture from url ${src}`);
 					rej(e);
 				};
 			});
-		});
+			
+			packedImages.push(packedImage)
+		}
 
-		return Promise.all(proms).then((infos: PackedImage[]) => {
-			this.tiles = infos;
-			this.texture.needsUpdate = true;
-		});
+		this.tiles = packedImages
+		this.texture.needsUpdate = true;
 	}
 }

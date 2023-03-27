@@ -51,6 +51,7 @@
 		"svelte-check": "^3.0.1",
 		"svelte-sequential-preprocessor": "^1.0.0",
 		"three": "^0.150.1",
+		"tiny-glob": "^0.2.9",
 		"tslib": "^2.4.1",
 		"typescript": "^5.0.0",
 		"vite": "^4.2.0",

@@ -1,10 +1,13 @@
 import type { ChunkData } from './ChunkManager';
 import type { Vector3Tuple } from 'three';
 
-export function rgbToHex(num: number) {
-	let str = num.toString(16);
-	while (str.length < 6) str = '0' + str;
-	return '#' + str;
+function componentToHex(c: number) {
+  const hex = c.toString(16);
+  return hex.length == 1 ? "0" + hex : hex;
+}
+
+export function rgbToHex(r: number, g: number, b: number) {
+  return componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
 export function hexToRgb(hex: string) {

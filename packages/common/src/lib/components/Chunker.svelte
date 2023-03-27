@@ -22,15 +22,16 @@
 
 <script lang="ts">
 	import { onMount } from "svelte"
-	import { Group, Vector3 } from "three"
+	import { Group, Vector3, Object3D } from "three"
 	import { TextureManager, CulledMesher, generateChunkInfoFromFunction } from "$lib"
-	import { useThrelte } from "@threlte/core"
+	import { useThrelte, Group as ThrelteGroup } from "@threlte/core"
 	import type { TextureInfo } from "$lib"
 	
 	const ctx = useThrelte()
 
 	export let world: (i: number, j: number, k: number) => number
 	export let textures: TextureInfo[]
+	export let container: Group
 
 	let canvas: HTMLCanvasElement
 	let chunkManager: ChunkManager
@@ -64,7 +65,7 @@
 			mesher: new CulledMesher(),
 			chunkSize: 128,
 			generateVoxelChunk: (low, high) => generateChunkInfoFromFunction(low, high, world),
-			container: new Group(),
+			container,
 			textureManager: new TextureManager({
 				aoEnabled: true,
 				canvas,
@@ -74,7 +75,7 @@
 		chunkManager.textureManager.loadTextures(textures).then(() =>{
 			chunkManager!.rebuildAllMeshes()
 			chunkManager!.requestMissingChunks(new Vector3(0,0,0))
-			ctx.scene.add(chunkManager!.container)
+			// ctx.scene.add(chunkManager!.container)
 			console.log("Chunker.added")
 			loaded = true
 		})
