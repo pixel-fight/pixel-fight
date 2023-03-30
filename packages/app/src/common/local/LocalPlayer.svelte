@@ -15,7 +15,7 @@
     import { isFiring, points, timeSinceLastFire, weapon } from "../../stores/player";
     import { attemptToFireWeapon, weapons } from "../../lib/weapons";
     import Raycast from "../../lib/Raycast.svelte";
-    export let position = undefined;
+    export let position: { x: number; y: number; z: number } = undefined;
     export let playerCollisionGroups = [0];
     export let groundCollisionGroups = [15];
     export let radius = 0.3;
