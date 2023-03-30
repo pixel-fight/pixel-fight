@@ -313,7 +313,6 @@ export class ChunkManager {
 		// TODO replicate this
 		// this.container.add(chunk.surfaceMesh);
 		const pos = chunk.realPosition.clone().multiplyScalar(this.chunkSize);
-		console.log(chunk);
 		chunk.surfaceMesh.position.copy(pos);
 	}
 

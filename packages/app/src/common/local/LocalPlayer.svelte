@@ -73,16 +73,16 @@
     function onKeyDown(e) {
         switch (e.key) {
             case "s":
-                backward = 1;
+                backward = 10;
                 break;
             case "w":
-                forward = 1;
+                forward = 10;
                 break;
             case "a":
-                left = 1;
+                left = 10;
                 break;
             case "d":
-                right = 1;
+                right = 10;
                 break;
             case "q":
                 weapon.set(weapons.Pistol);
@@ -91,8 +91,8 @@
                 weapon.set(weapons.Pickaxe);
                 break;
             case " ":
-                if (!rigidBody || !grounded) break;
-                rigidBody.applyImpulse({ x: 0, y: jumpStrength, z: 0 }, true);
+                // if (!rigidBody || !grounded) break;
+                rigidBody.applyImpulse({ x: 0, y: 10, z: 0 }, true);
                 break;
             default:
                 break;
@@ -161,8 +161,8 @@
             sensor
             on:sensorenter={() => (grounded = true)}
             on:sensorexit={() => (grounded = false)}
-            shape={"ball"}
-            args={[radius * 1.2]}
+            shape={"cylinder"}
+            args={[2, radius * 1.2]}
             position={{ y: -height / 2 + radius }}
         />
     </CollisionGroups>

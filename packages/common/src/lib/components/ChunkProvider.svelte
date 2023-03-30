@@ -55,8 +55,7 @@
 
 	import Chunk from './Chunk.svelte';
 	import { useTextureProvider } from './TextureProvider.svelte';
-	import { Mesh } from '@threlte/core';
-	import { BoxGeometry, MeshBasicMaterial, Vector3 } from 'three';
+	import { Vector3 } from 'three';
 
 	export let world: (i: number, j: number, k: number) => number;
 
@@ -73,16 +72,7 @@
 
 <!-- Render all chunks -->
 {#each Object.entries(chunkProvider.chunkManager.chunks) as [id, chunk]}
-	<RigidBody type="fixed">
-		<AutoColliders shape="convexHull">
-			<Mesh
-				receiveShadow
-				position={chunk.realPosition}
-				geometry={new BoxGeometry(10, 1, 10)}
-				material={textureManager.material}
-			/>
-		</AutoColliders>
-	</RigidBody>
+	<Chunk {chunk} />
 {/each}
 
 <style>
