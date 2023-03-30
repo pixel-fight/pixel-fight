@@ -41,8 +41,8 @@ export class TextureManager {
 	animated: Record<string, unknown>;
 	material: Material;
 
-	constructor(opts: { canvas: HTMLCanvasElement, aoEnabled?: boolean }) {
-		this.canvas = opts.canvas
+	constructor(opts: { canvas: HTMLCanvasElement; aoEnabled?: boolean }) {
+		this.canvas = opts.canvas;
 		this.canvas.setAttribute('id', 'texture');
 		this.aoEnabled = opts.aoEnabled ?? false;
 		this.canvas.width = 128;
@@ -70,55 +70,55 @@ export class TextureManager {
 			} satisfies Uniforms,
 			vertexColors: true,
 			vertexShader: `
-            attribute vec2 repeat;
-            attribute vec4 subrect;
-            attribute float frameCount;
-            attribute float occlusion;
-            varying vec2 vUv;
-            varying vec2 vRepeat;
-            varying vec4 vSubrect;
-            varying float vFrameCount;
-            varying float vOcclusion;
-            void main() {
-                vUv = uv;
-                vSubrect = subrect;
-                vRepeat = repeat;
-                vFrameCount = frameCount;
-                vOcclusion = occlusion;
-                vec4 mvPosition = modelViewMatrix * vec4(position,1.0);
-                gl_Position = projectionMatrix * mvPosition;
-            } 
-            `,
+				attribute vec2 repeat;
+				attribute vec4 subrect;
+				attribute float frameCount;
+				attribute float occlusion;
+				varying vec2 vUv;
+				varying vec2 vRepeat;
+				varying vec4 vSubrect;
+				varying float vFrameCount;
+				varying float vOcclusion;
+				void main() {
+						vUv = uv;
+						vSubrect = subrect;
+						vRepeat = repeat;
+						vFrameCount = frameCount;
+						vOcclusion = occlusion;
+						vec4 mvPosition = modelViewMatrix * vec4(position,1.0);
+						gl_Position = projectionMatrix * mvPosition;
+				} 
+			`,
 			fragmentShader: `
-                uniform sampler2D textureSamp;
-                uniform float uTime;
-                uniform bool texturesEnabled;
-                varying vec2 vUv;
-                varying vec2 vRepeat;
-                varying vec4 vSubrect;
-                varying float vFrameCount;
-                varying float vOcclusion;
-                void main() {
-                    vec2 fuv = vUv;
-                    vec4 sr = vSubrect;
-                    //sr.z = sub rect width
-                    //sr.w = sub rect height
-                    float frameCount = 3.0;
-                    // float cframe = mod(uTime,frameCount);
-                    float cframe = mod(uTime,vFrameCount);
-                    float cframe2 = floor(cframe); 
-                    sr.x = sr.x + cframe2*sr.z;
-                    fuv.x = sr.x + fract(vUv.x*vRepeat.x)*sr.z;
-                    fuv.y = sr.y + fract(vUv.y*vRepeat.y)*sr.w;
-                    vec4 color = vec4(1.0,1.0,1.0,1.0);
-                    
-                    if(texturesEnabled) {
-                        color = texture2D(textureSamp, fuv);
-                    }
-                    color = color*(vOcclusion);
-                    gl_FragColor = vec4(color.xyz,1.0);
-                }
-            `
+				uniform sampler2D textureSamp;
+				uniform float uTime;
+				uniform bool texturesEnabled;
+				varying vec2 vUv;
+				varying vec2 vRepeat;
+				varying vec4 vSubrect;
+				varying float vFrameCount;
+				varying float vOcclusion;
+				void main() {
+						vec2 fuv = vUv;
+						vec4 sr = vSubrect;
+						//sr.z = sub rect width
+						//sr.w = sub rect height
+						float frameCount = 3.0;
+						// float cframe = mod(uTime,frameCount);
+						float cframe = mod(uTime,vFrameCount);
+						float cframe2 = floor(cframe); 
+						sr.x = sr.x + cframe2*sr.z;
+						fuv.x = sr.x + fract(vUv.x*vRepeat.x)*sr.z;
+						fuv.y = sr.y + fract(vUv.y*vRepeat.y)*sr.w;
+						vec4 color = vec4(1.0,1.0,1.0,1.0);
+						
+						if(texturesEnabled) {
+								color = texture2D(textureSamp, fuv);
+						}
+						color = color*(vOcclusion);
+						gl_FragColor = vec4(color.xyz,1.0);
+				}
+			`
 		});
 	}
 
@@ -195,17 +195,15 @@ export class TextureManager {
 		};
 	}
 
-	async loadTextures(
-		infos: TextureInfo[]
-	) {
-		const packedImages: PackedImage[] = []
+	async loadTextures(infos: TextureInfo[]) {
+		const packedImages: PackedImage[] = [];
 
 		for (const [index, { src }] of infos.entries()) {
 			console.log('loading', src);
 
 			const packedImage = await new Promise<PackedImage>((res, rej) => {
 				const img = new Image();
-				img.setAttribute("crossorigin", "anonymous")
+				img.setAttribute('crossorigin', 'anonymous');
 				img.id = src;
 				img.src = src;
 				img.onload = () => {
@@ -217,11 +215,11 @@ export class TextureManager {
 					rej(e);
 				};
 			});
-			
-			packedImages.push(packedImage)
+
+			packedImages.push(packedImage);
 		}
 
-		this.tiles = packedImages
+		this.tiles = packedImages;
 		this.texture.needsUpdate = true;
 	}
 }

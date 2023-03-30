@@ -2,7 +2,6 @@
 	import { TextureManager } from '$lib/voxels';
 	import { type InjectionKey, getContext, setContext } from 'optional-default-site-kit';
 	import { onMount } from 'svelte';
-	import type { Texture } from 'three';
 
 	export class TextureProvider {
 		textureManager: TextureManager;

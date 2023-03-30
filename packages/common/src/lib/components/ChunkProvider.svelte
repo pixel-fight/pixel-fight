@@ -1,13 +1,19 @@
 <script lang="ts" context="module">
 	import { type InjectionKey, getContext, setContext } from 'optional-default-site-kit';
-	import { ChunkManager } from '$lib/voxels';
+	import { ChunkManager, TextureManager } from '$lib/voxels';
 
 	export class ChunkProvider {
-		declare chunkManager: ChunkManager;
-		declare isReadyToMount: boolean;
+		chunkManager: ChunkManager;
+		textureManager: TextureManager;
 
-		constructor({ world }: { world: (i: number, j: number, k: number) => number }) {
-			this.isReadyToMount = false;
+		constructor({
+			world,
+			textureManager
+		}: {
+			world: (i: number, j: number, k: number) => number;
+			textureManager: TextureManager;
+		}) {
+			this.textureManager = textureManager;
 
 			this.chunkManager = new ChunkManager({
 				chunkDistance: 1,
@@ -15,10 +21,7 @@
 				mesher: new CulledMesher(),
 				chunkSize: 128,
 				generateVoxelChunk: (low, high) => generateChunkInfoFromFunction(low, high, world),
-				textureManager: new TextureManager({
-					aoEnabled: true,
-					canvas: document.createElement('canvas')
-				})
+				textureManager
 			});
 		}
 
@@ -48,25 +51,38 @@
 <script lang="ts">
 	import { AutoColliders, RigidBody } from '@threlte/rapier';
 
-	import { TextureManager, CulledMesher, generateChunkInfoFromFunction } from '$lib';
+	import { CulledMesher, generateChunkInfoFromFunction } from '$lib';
 
 	import Chunk from './Chunk.svelte';
+	import { useTextureProvider } from './TextureProvider.svelte';
+	import { Mesh } from '@threlte/core';
+	import { BoxGeometry, MeshBasicMaterial, Vector3 } from 'three';
 
 	export let world: (i: number, j: number, k: number) => number;
 
+	const { textureManager } = useTextureProvider();
+
 	// Initialize a new Chunk Manager
-	const chunkProvider = new ChunkProvider({ world });
+	const chunkProvider = new ChunkProvider({ world, textureManager });
 	setContext(chunkerContextKey, chunkProvider);
+
+	const { chunkManager } = chunkProvider;
+	chunkManager.rebuildAllMeshes();
+	chunkManager.requestMissingChunks(new Vector3(0, 0, 0));
 
 	let colliders: any[];
 	$: console.log(colliders);
 </script>
 
 <!-- Render all chunks -->
-{#each [0] as chunk}
+{#each Object.entries(chunkProvider.chunkManager.chunks) as [id, chunk]}
 	<RigidBody>
 		<AutoColliders shape="convexHull" bind:colliders>
-			<Chunk bind:chunk />
+			<Mesh
+				position={chunk.realPosition}
+				geometry={new BoxGeometry(10, 0, 10)}
+				material={textureManager.material}
+			/>
 		</AutoColliders>
 	</RigidBody>
 {/each}
