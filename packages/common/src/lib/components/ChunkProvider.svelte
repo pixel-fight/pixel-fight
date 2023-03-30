@@ -69,18 +69,16 @@
 	const { chunkManager } = chunkProvider;
 	chunkManager.rebuildAllMeshes();
 	chunkManager.requestMissingChunks(new Vector3(0, 0, 0));
-
-	let colliders: any[];
-	$: console.log(colliders);
 </script>
 
 <!-- Render all chunks -->
 {#each Object.entries(chunkProvider.chunkManager.chunks) as [id, chunk]}
-	<RigidBody>
-		<AutoColliders shape="convexHull" bind:colliders>
+	<RigidBody type="fixed">
+		<AutoColliders shape="convexHull">
 			<Mesh
+				receiveShadow
 				position={chunk.realPosition}
-				geometry={new BoxGeometry(10, 0, 10)}
+				geometry={new BoxGeometry(10, 1, 10)}
 				material={textureManager.material}
 			/>
 		</AutoColliders>
