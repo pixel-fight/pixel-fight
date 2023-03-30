@@ -2,27 +2,29 @@ import type { ChunkData } from './ChunkManager';
 import type { Vector3Tuple } from 'three';
 
 function componentToHex(c: number) {
-  const hex = c.toString(16);
-  return hex.length == 1 ? "0" + hex : hex;
+	const hex = c.toString(16);
+	return hex.length == 1 ? '0' + hex : hex;
 }
 
 export function rgbToHex(r: number, g: number, b: number) {
-  return componentToHex(r) + componentToHex(g) + componentToHex(b);
+	return componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
 export function hexToRgb(hex: string) {
-  // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
-  var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-  hex = hex.replace(shorthandRegex, function(_, r, g, b) {
-    return r + r + g + g + b + b;
-  });
+	// Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+	var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+	hex = hex.replace(shorthandRegex, function (_, r, g, b) {
+		return r + r + g + g + b + b;
+	});
 
-  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? {
-    r: parseInt(result[1], 16),
-    g: parseInt(result[2], 16),
-    b: parseInt(result[3], 16)
-  } : null;
+	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	return result
+		? {
+				r: parseInt(result[1], 16),
+				g: parseInt(result[2], 16),
+				b: parseInt(result[3], 16)
+		  }
+		: null;
 }
 
 export function generateChunkInfoFromFunction(
@@ -61,7 +63,6 @@ export const DIRS = {
 };
 
 export const rand = (min: number, max: number) => Math.random() * (max - min) + min;
-
 
 /*
     export function traceRayAtScreenCoords(app, pt, distance) {

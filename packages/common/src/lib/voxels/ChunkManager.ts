@@ -70,19 +70,7 @@ export class Chunk {
 const SCALE = new Vector3(1.0, 1.0, 1.0);
 
 export type VoxelChunkGenerator = (low: number[], high: number[], ps: Vector3) => ChunkData;
-
-export interface ChunkManagerOptions {
-	container: Object3D;
-	chunkDistance: number;
-	chunkSize: number;
-	blockSize: number;
-	mesher: CulledMesher;
-	textureManager: TextureManager;
-	generateVoxelChunk: VoxelChunkGenerator;
-}
-
 export class ChunkManager {
-	container: Object3D;
 	listeners: Record<string, ChunkEventHandler[]>;
 	distance: number;
 	chunkSize: number;
@@ -94,9 +82,15 @@ export class ChunkManager {
 	chunkBits: number;
 	CHUNK_CACHE: Record<string, ChunkData>;
 
-	constructor(opts: ChunkManagerOptions) {
+	constructor(opts: {
+		chunkDistance: number;
+		chunkSize: number;
+		blockSize: number;
+		mesher: CulledMesher;
+		textureManager: TextureManager;
+		generateVoxelChunk: VoxelChunkGenerator;
+	}) {
 		this.listeners = {};
-		this.container = opts.container;
 		this.distance = opts.chunkDistance || 2;
 		this.chunkSize = opts.chunkSize || 32;
 		this.blockSize = opts.blockSize || 1;
@@ -123,6 +117,7 @@ export class ChunkManager {
 		if (!this.listeners[type]) this.listeners[type] = [];
 		this.listeners[type].push(cb);
 	}
+
 	emit(type: string, evt: any) {
 		if (!this.listeners[type]) this.listeners[type] = [];
 		this.listeners[type].forEach((cb) => cb(evt));
@@ -131,7 +126,8 @@ export class ChunkManager {
 	clear() {
 		Object.keys(this.chunks).forEach((key) => {
 			const chunk = this.chunks[key];
-			this.container.remove(chunk.surfaceMesh!);
+			// TODO fix this
+			// this.container.remove(chunk.surfaceMesh!);
 			chunk.surfaceMesh!.geometry.dispose();
 			this.CHUNK_CACHE[chunk.id] = chunk.data;
 			chunk.dispose();
@@ -295,7 +291,8 @@ export class ChunkManager {
 
 			const chunk = this.chunks[chunkIndex];
 			if (!chunk) return;
-			this.container.remove(chunk.surfaceMesh!);
+			// TODO replicate this
+			// this.container.remove(chunk.surfaceMesh!);
 			chunk.surfaceMesh!.geometry.dispose();
 			this.CHUNK_CACHE[chunk.id] = chunk.data;
 			chunk.dispose();
@@ -308,15 +305,18 @@ export class ChunkManager {
 	}
 
 	rebuildMesh(chunk: Chunk) {
-		if (chunk.surfaceMesh) this.container.remove(chunk.surfaceMesh);
+		// TODO replicate this
+		// if (chunk.surfaceMesh) this.container.remove(chunk.surfaceMesh);
 		chunk.surfaceMesh = new VoxelMesh(chunk, this.mesher, SCALE, this).createSurfaceMesh(
 			this.textureManager.material
 		);
-		this.container.add(chunk.surfaceMesh);
+		// TODO replicate this
+		// this.container.add(chunk.surfaceMesh);
 		const pos = chunk.realPosition.clone().multiplyScalar(this.chunkSize);
 		console.log(chunk);
 		chunk.surfaceMesh.position.copy(pos);
 	}
+
 	rebuildAllMeshes() {
 		Object.keys(this.chunks).forEach((key) => this.rebuildMesh(this.chunks[key]));
 	}

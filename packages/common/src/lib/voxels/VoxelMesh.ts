@@ -251,7 +251,7 @@ export class VoxelMesh {
 		geometry.setAttribute('frameCount', new Float32BufferAttribute(frameCount, 1));
 		geometry.setAttribute('occlusion', new Float32BufferAttribute(occlusion, 1));
 
-		geometry.index!.needsUpdate = true
+		geometry.index!.needsUpdate = true;
 		geometry.getAttribute('uv').needsUpdate = true;
 		geometry.getAttribute('position').needsUpdate = true;
 		// geometry.getAttribute('normal').needsUpdate = true;

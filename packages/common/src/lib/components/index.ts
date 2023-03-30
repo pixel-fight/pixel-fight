@@ -1,3 +1,3 @@
-export { default as Chunker } from "./Chunker.svelte"
-export * from "./Chunker.svelte"
-export { default as Voxel } from "./Voxel.svelte"
+export { default as Chunker } from './ChunkProvider.svelte';
+export * from './ChunkProvider.svelte';
+export { default as Voxel } from './Voxel.svelte';

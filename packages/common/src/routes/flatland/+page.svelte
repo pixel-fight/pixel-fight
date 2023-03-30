@@ -4,7 +4,8 @@
 	import { AmbientLight, DirectionalLight, Mesh } from '@threlte/core';
 	import { AutoColliders, CollisionGroups, RigidBody } from '@threlte/rapier';
 	import LocalPlayer from '../../../../../packages/app/src/common/local/LocalPlayer.svelte';
-	import Chunker from '$lib/components/Chunker.svelte';
+	import Chunker from '$lib/components/ChunkProvider.svelte';
+	import TextureProvider from '$lib/components/TextureProvider.svelte';
 
 	let group: ThreeGroup;
 
@@ -26,43 +27,40 @@
 	};
 </script>
 
-<DirectionalLight shadow position={{ y: 3, x: 8, z: -3 }} />
-<AmbientLight intensity={1} />
+<TextureProvider
+	textures={[
+		{
+			src: '/textures/kenneynl/tiles/grass_top.png'
+		},
+		{
+			src: '/textures/kenneynl/tiles/dirt.png'
+		},
+		{
+			src: '/textures/kenneynl/tiles/lava.png'
+		},
+		{
+			src: '/textures/kenneynl/tiles/stone.png'
+		},
+		{
+			src: '/textures/kenneynl/tiles/sand.png'
+		},
+		{
+			src: '/textures/tnt.png'
+		},
+		{
+			src: '/textures/heart.png'
+		},
+		{
+			src: '/textures/tnt.png'
+		}
+	]}
+>
+	<DirectionalLight shadow position={{ y: 3, x: 8, z: -3 }} />
+	<AmbientLight intensity={1} />
 
-<CollisionGroups groups={[0]}>
-	<LocalPlayer position={{ x: 0, y: 6, z: 0 }} />
+	<CollisionGroups groups={[0]}>
+		<LocalPlayer position={{ x: 0, y: 6, z: 0 }} />
 
-	<Chunker
-		world={flatland}
-		textures={[
-			{
-				src: '/textures/kenneynl/tiles/grass_top.png'
-			},
-			{
-				src: '/textures/kenneynl/tiles/dirt.png'
-			},
-			{
-				src: '/textures/kenneynl/tiles/lava.png'
-			},
-			{
-				src: '/textures/kenneynl/tiles/stone.png'
-			},
-			{
-				src: '/textures/kenneynl/tiles/sand.png'
-			},
-			{
-				src: '/textures/tnt.png'
-			},
-			{
-				src: '/textures/heart.png'
-			},
-			{
-				src: '/textures/tnt.png'
-			}
-		]}
-	>
-		<!-- {#each [...Array(5).keys()].map(_ => Math.floor(Math.random() * 6)) as value, index}
-					<Voxel position={{ x: 0, y: index, z: 0 }} {value} />
-			{/each} -->
-	</Chunker>
-</CollisionGroups>
+		<Chunker world={flatland} />
+	</CollisionGroups>
+</TextureProvider>

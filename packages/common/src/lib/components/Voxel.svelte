@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Position } from '@threlte/core';
-	import { useChunker } from './Chunker.svelte';
+	import { useChunker } from './ChunkProvider.svelte';
 	import { onMount } from 'svelte';
 	import { Vector3 } from 'three';
 
