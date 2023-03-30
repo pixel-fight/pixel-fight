@@ -59,7 +59,7 @@
 	<AmbientLight intensity={1} />
 
 	<CollisionGroups groups={[0]}>
-		<LocalPlayer position={{ x: 0, y: 6, z: 0 }} />
+		<LocalPlayer position={{ x: 0, y: 1, z: 0 }} />
 
 		<Chunker world={flatland} />
 	</CollisionGroups>

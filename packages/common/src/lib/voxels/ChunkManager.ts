@@ -1,4 +1,4 @@
-import { Vector3, type Vector3Tuple, type Mesh, type Object3D } from 'three';
+import { Vector3, type Vector3Tuple, type Mesh } from 'three';
 import { CulledMesher } from './CulledMesher.js';
 import { VoxelMesh } from './VoxelMesh.js';
 import type { TextureManager } from './TextureManager';
