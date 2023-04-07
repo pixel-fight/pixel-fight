@@ -305,6 +305,7 @@ export class ChunkManager {
 	}
 
 	rebuildMesh(chunk: Chunk) {
+		return;
 		// TODO replicate this
 		// if (chunk.surfaceMesh) this.container.remove(chunk.surfaceMesh);
 		chunk.surfaceMesh = new VoxelMesh(chunk, this.mesher, SCALE, this).createSurfaceMesh(

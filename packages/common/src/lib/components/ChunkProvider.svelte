@@ -49,8 +49,6 @@
 </script>
 
 <script lang="ts">
-	import { AutoColliders, RigidBody } from '@threlte/rapier';
-
 	import { CulledMesher, generateChunkInfoFromFunction } from '$lib';
 
 	import Chunk from './Chunk.svelte';
@@ -66,14 +64,20 @@
 	setContext(chunkerContextKey, chunkProvider);
 
 	const { chunkManager } = chunkProvider;
-	chunkManager.rebuildAllMeshes();
+	// chunkManager.rebuildAllMeshes();
 	chunkManager.requestMissingChunks(new Vector3(0, 0, 0));
+
+	const { chunks } = chunkProvider.chunkManager;
 </script>
 
 <!-- Render all chunks -->
 {#each Object.entries(chunkProvider.chunkManager.chunks) as [id, chunk]}
 	<Chunk {chunk} />
 {/each}
+
+<!-- {#if chunks[Object.keys(chunks)[3]]}
+	<Chunk chunk={chunks[Object.keys(chunks)[3]]} />
+{/if} -->
 
 <style>
 	canvas {
